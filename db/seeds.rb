@@ -10,6 +10,14 @@
   password = "password"
   User.create!(email: email,
                password: password,
-               password_confirmation: password,
+               password_confirmation: password
+               )
+end
+
+100.times do |n|
+  title = "タイトル#{n}"
+  content = "ブログの内容#{n}"
+  Blog.create!(title: title,
+                content: content
                )
 end
