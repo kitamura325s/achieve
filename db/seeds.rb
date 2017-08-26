@@ -7,8 +7,10 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 100.times do |n|
   email = Faker::Internet.email
+  name = Faker::Name.name
   password = "password"
   User.create!(email: email,
+               name: name,
                password: password,
                password_confirmation: password
                )
@@ -18,6 +20,7 @@ end
   title = "タイトル#{n}"
   content = "ブログの内容#{n}"
   Blog.create!(title: title,
-                content: content
+                content: content,
+                user_id: n + 1
                )
 end
