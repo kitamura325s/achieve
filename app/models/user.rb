@@ -5,7 +5,33 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable, :confirmable, :omniauthable
   mount_uploader :avatar, AvatarUploader
   
+  #reverse_relationshipsというアソシエーションを定義
+  has_many :relationships, foreign_key: "follower_id", dependent: :destroy
+  #reverse_relationshipsというアソシエーションを定義
+  has_many :reverse_relationships, foreign_key: "followed_id", class_name: "Relationship", dependent: :destroy
+  
+  #「自分」と「自分”が”フォローしている人」の1対多の関係性
+  has_many :followed_users, through: :relationships, source: :followed
+  #「自分」と「自分”を”フォローしている人」の1対多の関係性
+  has_many :followers, through: :reverse_relationships, source: :follower
+
+  #指定のユーザをフォローする
+  def follow!(other_user)
+    relationships.create!(followed_id: other_user.id)
+  end
+
+  #フォローしているかどうかを確認する
+  def following?(other_user)
+    relationships.find_by(followed_id: other_user.id)
+  end
+
+  def unfollow!(other_user)
+    relationships.find_by(followed_id: other_user.id).destroy
+  end
+
+  
   has_many :blogs, dependent: :destroy
+  
   # CommentモデルのAssociationを設定
   has_many :comments, dependent: :destroy
 
